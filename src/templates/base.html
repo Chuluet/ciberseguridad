@@ -1,20 +1,54 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}SIGA{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}SIGA - Sistema de Gestión Académica{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <div class="topnav">
-    <a href="/">Inicio</a>
-    <a href="/login">Login</a>
-    <a href="/buscar">Buscar</a>
-    <a href="/foro">Foro</a>
-    <a href="/mis-notas">Mis notas</a>
-    {% if session.get('usuario') %}<a href="/logout">Salir</a>{% endif %}
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="mark">S</div>
+    <span class="txt">SIGA<small>Gestión Académica</small></span>
   </div>
+  <ul class="sidebar-nav">
+    <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><span class="dot"></span> Inicio</a></li>
+    <li><a href="/foro" class="{% if request.path == '/foro' %}active{% endif %}"><span class="dot"></span> Foro</a></li>
+    <li><a href="/mis-notas" class="{% if request.path == '/mis-notas' %}active{% endif %}"><span class="dot"></span> Mis notas</a></li>
+  {% if session.get('es_admin') %}
+    <li><a href="/admin" class="{% if request.path == '/admin' %}active{% endif %}"><span class="dot"></span> Panel admin</a></li>
+  {% endif %}
+  {% if not session.get('usuario') %}
+    <li><a href="/login" class="{% if request.path == '/login' %}active{% endif %}"><span class="dot"></span> Login</a></li>
+  {% endif %}
+  </ul>
+  <div class="sidebar-foot">
+    {% if session.get('usuario') %}
+      Sesión: {{ session.get('usuario') }}<br>
+      <a href="/logout" style="color:#AEB8D0;">Cerrar sesión</a>
+    {% else %}
+      SIGA © 2026
+    {% endif %}
+  </div>
+</aside>
+
+<div class="topbar">
+  <span class="topbar-crumb">{% block crumb %}Panel{% endblock %}</span>
+  <div class="topbar-user">
+    {% if session.get('usuario') %}
+      <div class="avatar">{{ session.get('usuario')[0]|upper }}</div>
+      <span>{{ session.get('usuario') }}</span>
+    {% else %}
+      <a href="/login">Iniciar sesión</a>
+    {% endif %}
+  </div>
+</div>
+
+<main class="main">
   {% block content %}{% endblock %}
+</main>
+
 </body>
 </html>

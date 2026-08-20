@@ -1,33 +1,42 @@
 {% extends "base.html" %}
 {% block title %}SIGA - Foro{% endblock %}
+{% block crumb %}Foro{% endblock %}
+
 {% block content %}
-<div class="card-outer">
-  <div class="wrap card">
-    <div class="logo-row">
-      <div class="logo-mark"></div>
-      <span class="logo-text">SIGA</span>
-    </div>
-    <h1>Foro de anuncios</h1>
-    <p class="subtitle">Publicaciones visibles para todos los estudiantes.</p>
+<div class="page-head">
+  <h1>Foro de anuncios</h1>
+  <p>Publicaciones visibles para todos los estudiantes.</p>
+</div>
 
-    <form method="post" style="margin-bottom: 20px;">
-      <label>Nombre</label>
-      <input type="text" name="autor">
-      <label>Mensaje</label>
-      <textarea name="mensaje" rows="3"></textarea>
-      <button type="submit">Publicar</button>
-    </form>
-
-    {% for a in anuncios %}
-    <div class="announcement">
-      <div class="autor">{{ a.autor }}</div>
-      <div class="msg">{{ a.mensaje | safe }}</div>
-    </div>
-    {% endfor %}
-
-    <p class="helper">
-      Prueba de XSS almacenado en "Mensaje": <code>&lt;img src=x onerror=alert('XSS')&gt;</code>
-    </p>
+<div class="card">
+  <div class="card-title">
+    <h2>Nueva publicación</h2>
   </div>
+  <form method="post">
+    <label>Nombre</label>
+    <input type="text" name="autor" placeholder="Tu nombre">
+    <label>Mensaje</label>
+    <textarea name="mensaje" rows="3" placeholder="Escribe tu anuncio..."></textarea>
+    <button type="submit">Publicar</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">
+    <h2>Publicaciones recientes</h2>
+    <span class="pill">{{ anuncios|length if anuncios else 0 }}</span>
+  </div>
+
+  {% for a in anuncios %}
+  <div class="announcement">
+    <div class="autor">{{ a.autor }}</div>
+    <div class="msg">{{ a.mensaje | safe }}</div>
+  </div>
+  {% else %}
+  <div class="announcement">
+    <div class="msg" style="color: var(--muted);">Todavía no hay publicaciones.</div>
+  </div>
+  {% endfor %}
+
 </div>
 {% endblock %}

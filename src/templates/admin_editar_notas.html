@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Editar notas{% endblock %}
+{% block crumb %}Panel admin / Editar notas{% endblock %}
+
+{% block content %}
+<p class="helper" style="margin-top:0; margin-bottom: 16px;">
+  <a class="link" href="/admin">&larr; Volver al panel</a>
+</p>
+
+<div class="page-head">
+  <h1>Editar notas</h1>
+  <p>Modifica, agrega o elimina calificaciones del estudiante seleccionado.</p>
+</div>
+
+<div class="card">
+  <div class="student-row" style="margin-bottom: 0;">
+    <div>
+      <p class="name">{{ estudiante.nombre_completo }}</p>
+      <p class="course">Curso {{ estudiante.curso }}</p>
+    </div>
+    <span class="pill">id={{ estudiante.id }}</span>
+  </div>
+</div>
+
+{% if mensaje %}
+<p class="subtitle" style="color: var(--green); margin-top: -8px;">{{ mensaje }}</p>
+{% endif %}
+
+<div class="card">
+  <div class="card-title">
+    <h2>Notas actuales</h2>
+  </div>
+
+  {% if notas %}
+  <form method="post">
+    <input type="hidden" name="accion" value="actualizar">
+    <div class="grade-list" style="margin-bottom:16px;">
+      {% for nota in notas %}
+      <div class="grade-row" style="align-items:center;">
+        <span>{{ nota.materia }}</span>
+        <input type="text" name="nota_{{ nota.id }}" value="{{ '%.1f'|format(nota.nota) }}"
+               style="width:70px; margin:0; padding:6px 8px;">
+      </div>
+      {% endfor %}
+    </div>
+    <button type="submit" class="block">Guardar cambios</button>
+  </form>
+
+  <p class="subtitle" style="margin-top:20px;">Eliminar una materia</p>
+  <div class="grade-list">
+    {% for nota in notas %}
+    <div class="grade-row" style="align-items:center;">
+      <span>{{ nota.materia }} ({{ '%.1f'|format(nota.nota) }})</span>
+      <form method="post" style="margin:0;">
+        <input type="hidden" name="accion" value="eliminar">
+        <input type="hidden" name="nota_id" value="{{ nota.id }}">
+        <button type="submit" style="width:auto; background: var(--red); padding:6px 12px; font-size:12px;">Eliminar</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="subtitle" style="margin-bottom: 0;">Este estudiante todavía no tiene notas registradas.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="card-title">
+    <h2>Agregar materia</h2>
+  </div>
+  <form method="post">
+    <input type="hidden" name="accion" value="agregar">
+    <label>Materia</label>
+    <input type="text" name="materia" placeholder="ej. Matemáticas">
+    <label>Nota (0.0 - 5.0)</label>
+    <input type="text" name="nota_nueva" placeholder="ej. 4.5">
+    <button type="submit" class="block">Agregar</button>
+  </form>
+</div>
+{% endblock %}

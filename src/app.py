@@ -161,46 +161,6 @@ def logout():
     session.clear()
     return redirect(url_for("index"))
 
-
-# ---------------------------------------------------------------------------
-# 2a) XSS REFLEJADO
-# ---------------------------------------------------------------------------
-@app.route("/buscar")
-def buscar():
-    termino = request.args.get("q", "")
-
-    # VULNERABLE: el término de búsqueda se inserta en el HTML sin escapar,
-    # construyendo la página a mano en vez de usar autoescape de Jinja2.
-    # Prueba: /buscar?q=<script>alert(document.cookie)</script>
-    plantilla = """
-    <!doctype html><html lang="es"><head><meta charset="utf-8">
-    <link rel="stylesheet" href="/static/css/style.css"></head><body>
-      <div class="topnav">
-        <a href="/">Inicio</a><a href="/login">Login</a>
-        <a href="/buscar">Buscar</a><a href="/foro">Foro</a>
-        <a href="/mis-notas">Mis notas</a>
-      </div>
-      <div class="card-outer"><div class="wrap card">
-        <div class="logo-row"><div class="logo-mark"></div><span class="logo-text">SIGA</span></div>
-        <h1>Buscar materia o estudiante</h1>
-        <form method="get" style="margin-bottom:16px;">
-          <input type="text" name="q" placeholder="Escribe un nombre...">
-          <button type="submit">Buscar</button>
-        </form>
-        <p class="subtitle">Resultados para: """ + termino + """</p>
-        <div class="grade-list"><div class="grade-row">
-          <span>Sin resultados</span><span></span></div></div>
-      </div></div>
-    </body></html>
-    """
-    return render_template_string(plantilla)
-
-    # --- Versión corregida ---
-    # return render_template("buscar_seguro.html", termino=termino)
-    # (Jinja2 escapa automáticamente {{ termino }} con render_template
-    #  normal, en vez de construir el HTML a mano con concatenación)
-
-
 # ---------------------------------------------------------------------------
 # 2b) XSS ALMACENADO
 # ---------------------------------------------------------------------------
@@ -275,6 +235,78 @@ def notas_detail(estudiante_id):
     # if estudiante_id != session["usuario_id"] and not session.get("es_admin"):
     #     return "No autorizado", 403
 
+
+
+
+# ---------------------------------------------------------------------------
+# Panel de administración (control de acceso CORRECTO, a modo de contraste con el IDOR)
+# ---------------------------------------------------------------------------
+@app.route("/admin")
+def admin_panel():
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    if not session.get("es_admin"):
+        return "No autorizado", 403
+
+    db = get_db()
+    estudiantes = db.execute(
+        "SELECT id, usuario, nombre_completo, curso FROM usuarios WHERE es_admin = 0"
+    ).fetchall()
+    return render_template("admin_panel.html", estudiantes=estudiantes)
+
+
+@app.route("/admin/estudiante/<int:estudiante_id>", methods=["GET", "POST"])
+def admin_editar_notas(estudiante_id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    if not session.get("es_admin"):
+        return "No autorizado", 403
+
+    db = get_db()
+    mensaje = None
+
+    if request.method == "POST":
+        accion = request.form.get("accion")
+
+        if accion == "actualizar":
+            notas_actuales = db.execute(
+                "SELECT id FROM calificaciones WHERE estudiante_id = ?", (estudiante_id,)
+            ).fetchall()
+            for nota in notas_actuales:
+                campo = f"nota_{nota['id']}"
+                nuevo_valor = request.form.get(campo)
+                if nuevo_valor:
+                    db.execute(
+                        "UPDATE calificaciones SET nota = ? WHERE id = ?",
+                        (float(nuevo_valor), nota["id"]),
+                    )
+            db.commit()
+            mensaje = "Notas actualizadas correctamente."
+
+        elif accion == "eliminar":
+            nota_id = request.form.get("nota_id")
+            db.execute("DELETE FROM calificaciones WHERE id = ?", (nota_id,))
+            db.commit()
+            mensaje = "Materia eliminada."
+
+        elif accion == "agregar":
+            materia = request.form.get("materia", "").strip()
+            nota_nueva = request.form.get("nota_nueva", "").strip()
+            if materia and nota_nueva:
+                db.execute(
+                    "INSERT INTO calificaciones (estudiante_id, materia, nota) VALUES (?, ?, ?)",
+                    (estudiante_id, materia, float(nota_nueva)),
+                )
+                db.commit()
+                mensaje = "Materia agregada."
+
+    estudiante, notas = _cargar_boletin(estudiante_id)
+    if estudiante is None:
+        return "Estudiante no encontrado", 404
+
+    return render_template(
+        "admin_editar_notas.html", estudiante=estudiante, notas=notas, mensaje=mensaje
+    )
 
 if __name__ == "__main__":
     init_db()

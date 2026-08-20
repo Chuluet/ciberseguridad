@@ -1,29 +1,48 @@
 {% extends "base.html" %}
 {% block title %}SIGA - Inicio{% endblock %}
+{% block crumb %}Inicio{% endblock %}
+
 {% block content %}
-<div class="card-outer">
-  <div class="wrap card">
-    <div class="logo-row">
-      <div class="logo-mark"></div>
-      <span class="logo-text">SIGA</span>
-    </div>
-    <h1>Sistema de Información y Gestión Académica</h1>
-    <p class="subtitle">
-      {% if user %}
-        Sesión iniciada como <b>{{ user }}</b>
-      {% else %}
-        Consulta tus calificaciones y anuncios del curso.
-      {% endif %}
-    </p>
+<div class="page-head">
+  <h1>Sistema de Información y Gestión Académica</h1>
+  <p>
+    {% if user %}
+      Sesión iniciada como <strong>{{ user }}</strong>
+    {% else %}
+      Consulta tus calificaciones y los anuncios del curso.
+    {% endif %}
+  </p>
+</div>
 
-    <a class="btn" href="{{ user and '/mis-notas' or '/login' }}">
-      {{ user and 'Ver mis notas' or 'Ingresar' }}
+<div class="card">
+  <div class="card-title">
+    <h2>{{ user and 'Bienvenido de nuevo' or 'Acceso al portal' }}</h2>
+  </div>
+  <p class="subtitle" style="margin-bottom: 18px;">
+    {% if user %}
+      Puedes revisar tus notas o participar en el foro del curso.
+    {% else %}
+      Inicia sesión con tu usuario institucional para ver tu información académica.
+    {% endif %}
+  </p>
+  <a class="btn" href="{{ user and '/mis-notas' or '/login' }}" style="max-width: 220px; display: inline-block;">
+    {{ user and 'Ver mis notas' or 'Ingresar' }}
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-title">
+    <h2>Accesos rápidos</h2>
+  </div>
+  <div class="grade-list">
+   
+    <a href="/foro" class="grade-row link" style="text-decoration:none; color:inherit;">
+      <span>Foro de anuncios</span><span class="pill">Comunidad</span>
     </a>
-
-    <p class="helper">
-      Laboratorio de ciberseguridad — aplicación intencionalmente vulnerable,
-      solo para uso local.
-    </p>
+    <a href="/mis-notas" class="grade-row link" style="text-decoration:none; color:inherit;">
+      <span>Mis notas</span><span class="pill">Académico</span>
+    </a>
   </div>
 </div>
+
 {% endblock %}

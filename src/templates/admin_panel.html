@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Panel admin{% endblock %}
+{% block crumb %}Panel admin{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <h1 class="accent">Panel de administración</h1>
+  <p>Selecciona un estudiante para modificar sus notas.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">
+    <h2>Estudiantes registrados</h2>
+    <span class="pill">{{ estudiantes|length if estudiantes else 0 }}</span>
+  </div>
+
+  {% for e in estudiantes %}
+  <div class="student-row">
+    <div>
+      <p class="name">{{ e.nombre_completo }}</p>
+      <p class="course">Curso {{ e.curso }} · usuario: {{ e.usuario }}</p>
+    </div>
+    <a class="pill" style="text-decoration:none;" href="/admin/estudiante/{{ e.id }}">Editar notas</a>
+  </div>
+  {% else %}
+  <p class="subtitle" style="margin-bottom: 0;">No hay estudiantes registrados todavía.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

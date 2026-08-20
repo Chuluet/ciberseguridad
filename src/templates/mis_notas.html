@@ -1,34 +1,31 @@
 {% extends "base.html" %}
 {% block title %}SIGA - Mis notas{% endblock %}
+{% block crumb %}Mis notas{% endblock %}
+
 {% block content %}
-<div class="card-outer">
-  <div class="wrap card">
-    <div class="logo-row">
-      <div class="logo-mark"></div>
-      <span class="logo-text">SIGA</span>
-    </div>
+<div class="page-head">
+  <h1>Mis notas</h1>
+  <p>Consulta tus calificaciones registradas por materia.</p>
+</div>
 
-    <div class="student-row">
-      <div>
-        <p class="name">{{ estudiante.nombre_completo }}</p>
-        <p class="course">Curso {{ estudiante.curso }}</p>
-      </div>
-      <a class="pill" href="/notas/{{ estudiante.id }}" style="text-decoration:none;">id={{ estudiante.id }}</a>
+<div class="card">
+  <div class="student-row">
+    <div>
+      <p class="name">{{ estudiante.nombre_completo }}</p>
+      <p class="course">Curso {{ estudiante.curso }}</p>
     </div>
+    <a class="pill" href="/notas/{{ estudiante.id }}" style="text-decoration:none;">id={{ estudiante.id }}</a>
+  </div>
 
-    <div class="grade-list">
-      {% for nota in notas %}
-      <div class="grade-row">
-        <span>{{ nota.materia }}</span>
-        <span class="score {{ 'low' if nota.nota < 3.5 else ('high' if nota.nota >= 4.5 else '') }}">{{ '%.1f'|format(nota.nota) }}</span>
-      </div>
-      {% endfor %}
+  <div class="grade-list">
+    {% for nota in notas %}
+    <div class="grade-row">
+      <span>{{ nota.materia }}</span>
+      <span class="score {{ 'low' if nota.nota < 3.5 else ('high' if nota.nota >= 4.5 else '') }}">{{ '%.1f'|format(nota.nota) }}</span>
     </div>
-
-    <p class="helper">
-      Prueba de IDOR — cambia el <code>id</code> en la URL de arriba
-      (ej. <code>/notas/2</code>) para ver las notas de otro estudiante.
-    </p>
+    {% else %}
+    <div class="grade-row"><span style="color: var(--muted);">Sin notas registradas</span><span></span></div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
