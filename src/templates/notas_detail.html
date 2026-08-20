@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Boletín{% endblock %}
+{% block content %}
+<div class="card-outer">
+  <div class="wrap card">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SIGA</span>
+    </div>
+
+    <div class="student-row">
+      <div>
+        <p class="name">{{ estudiante.nombre_completo }}</p>
+        <p class="course">Curso {{ estudiante.curso }}</p>
+      </div>
+      <span class="pill">id={{ estudiante.id }}</span>
+    </div>
+
+    <div class="grade-list">
+      {% for nota in notas %}
+      <div class="grade-row">
+        <span>{{ nota.materia }}</span>
+        <span class="score {{ 'low' if nota.nota < 3.5 else ('high' if nota.nota >= 4.5 else '') }}">{{ '%.1f'|format(nota.nota) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="helper"><a class="link" href="/mis-notas">Volver a mis notas</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SIGA - Buscar</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="topnav">
+    <a href="/">Inicio</a>
+    <a href="/login">Login</a>
+    <a href="/buscar">Buscar</a>
+    <a href="/foro">Foro</a>
+    <a href="/mis-notas">Mis notas</a>
+  </div>
+  <div class="card-outer">
+    <div class="wrap card">
+      <div class="logo-row">
+        <div class="logo-mark"></div>
+        <span class="logo-text">SIGA</span>
+      </div>
+      <h1>Buscar materia o estudiante</h1>
+      <form method="get" style="margin-bottom: 16px;">
+        <input type="text" name="q" value="__TERMINO__" placeholder="Escribe un nombre...">
+        <button type="submit">Buscar</button>
+      </form>
+      <p class="subtitle">Resultados para: __TERMINO__</p>
+      <div class="grade-list">
+        <div class="grade-row"><span>Sin resultados</span><span></span></div>
+      </div>
+      <p class="helper">
+        Prueba de XSS reflejado en "q": <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

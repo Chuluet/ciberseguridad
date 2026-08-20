@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SIGA{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="topnav">
+    <a href="/">Inicio</a>
+    <a href="/login">Login</a>
+    <a href="/buscar">Buscar</a>
+    <a href="/foro">Foro</a>
+    <a href="/mis-notas">Mis notas</a>
+    {% if session.get('usuario') %}<a href="/logout">Salir</a>{% endif %}
+  </div>
+  {% block content %}{% endblock %}
+</body>
+</html>

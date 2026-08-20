@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Foro{% endblock %}
+{% block content %}
+<div class="card-outer">
+  <div class="wrap card">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SIGA</span>
+    </div>
+    <h1>Foro de anuncios</h1>
+    <p class="subtitle">Publicaciones visibles para todos los estudiantes.</p>
+
+    <form method="post" style="margin-bottom: 20px;">
+      <label>Nombre</label>
+      <input type="text" name="autor">
+      <label>Mensaje</label>
+      <textarea name="mensaje" rows="3"></textarea>
+      <button type="submit">Publicar</button>
+    </form>
+
+    {% for a in anuncios %}
+    <div class="announcement">
+      <div class="autor">{{ a.autor }}</div>
+      <div class="msg">{{ a.mensaje | safe }}</div>
+    </div>
+    {% endfor %}
+
+    <p class="helper">
+      Prueba de XSS almacenado en "Mensaje": <code>&lt;img src=x onerror=alert('XSS')&gt;</code>
+    </p>
+  </div>
+</div>
+{% endblock %}

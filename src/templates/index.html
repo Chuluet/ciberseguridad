@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Inicio{% endblock %}
+{% block content %}
+<div class="card-outer">
+  <div class="wrap card">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SIGA</span>
+    </div>
+    <h1>Sistema de Información y Gestión Académica</h1>
+    <p class="subtitle">
+      {% if user %}
+        Sesión iniciada como <b>{{ user }}</b>
+      {% else %}
+        Consulta tus calificaciones y anuncios del curso.
+      {% endif %}
+    </p>
+
+    <a class="btn" href="{{ user and '/mis-notas' or '/login' }}">
+      {{ user and 'Ver mis notas' or 'Ingresar' }}
+    </a>
+
+    <p class="helper">
+      Laboratorio de ciberseguridad — aplicación intencionalmente vulnerable,
+      solo para uso local.
+    </p>
+  </div>
+</div>
+{% endblock %}

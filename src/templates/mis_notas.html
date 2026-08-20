@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}SIGA - Mis notas{% endblock %}
+{% block content %}
+<div class="card-outer">
+  <div class="wrap card">
+    <div class="logo-row">
+      <div class="logo-mark"></div>
+      <span class="logo-text">SIGA</span>
+    </div>
+
+    <div class="student-row">
+      <div>
+        <p class="name">{{ estudiante.nombre_completo }}</p>
+        <p class="course">Curso {{ estudiante.curso }}</p>
+      </div>
+      <a class="pill" href="/notas/{{ estudiante.id }}" style="text-decoration:none;">id={{ estudiante.id }}</a>
+    </div>
+
+    <div class="grade-list">
+      {% for nota in notas %}
+      <div class="grade-row">
+        <span>{{ nota.materia }}</span>
+        <span class="score {{ 'low' if nota.nota < 3.5 else ('high' if nota.nota >= 4.5 else '') }}">{{ '%.1f'|format(nota.nota) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="helper">
+      Prueba de IDOR — cambia el <code>id</code> en la URL de arriba
+      (ej. <code>/notas/2</code>) para ver las notas de otro estudiante.
+    </p>
+  </div>
+</div>
+{% endblock %}
