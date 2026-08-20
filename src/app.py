@@ -201,7 +201,7 @@ def _cargar_boletin(estudiante_id):
     if estudiante is None:
         return None, None
     notas = db.execute(
-        "SELECT materia, nota FROM calificaciones WHERE estudiante_id = ?",
+        "SELECT id, materia, nota FROM calificaciones WHERE estudiante_id = ?",
         (estudiante_id,),
     ).fetchall()
     return estudiante, notas
